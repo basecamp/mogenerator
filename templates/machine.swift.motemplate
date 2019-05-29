@@ -15,43 +15,43 @@ import <$Import$>
 public extension <$managedObjectClassName$> {
 
 	// Convenience lookup of the entity name for <$managedObjectClassName$>
-    @objc <$if (hasCustomSuperclass || (hasCustomSuperentity && TemplateVar.overrideBaseClass))$>override <$endif$>public class var entityName: String {
+    @objc <$if (hasCustomSuperclass || (hasCustomSuperentity && TemplateVar.overrideBaseClass))$>override <$endif$>class var entityName: String {
         return "<$name$>"
     }
 
 	// Convenience to create a new <$managedObjectClassName$> in a managed object context.
-    @objc <$if (hasCustomSuperclass || (hasCustomSuperentity && TemplateVar.overrideBaseClass))$>override <$endif$>public class func entity(managedObjectContext: NSManagedObjectContext) -> NSEntityDescription? {
+    @objc <$if (hasCustomSuperclass || (hasCustomSuperentity && TemplateVar.overrideBaseClass))$>override <$endif$>class func entity(managedObjectContext: NSManagedObjectContext) -> NSEntityDescription? {
         return NSEntityDescription.entity(forEntityName: entityName, in: managedObjectContext)
     }
 	
 	<$if noninheritedAttributes.@count > 0$>
 	// Attribute names for <$managedObjectClassName$>
-	public struct Attributes {<$foreach Attribute noninheritedAttributes do$>
+	struct Attributes {<$foreach Attribute noninheritedAttributes do$>
 		static let <$Attribute.name$> = "<$Attribute.name$>"<$endforeach do$>
 	}
 	<$endif$>
 
 	<$if noninheritedRelationships.@count > 0$>
 	// Core Data relationship names for <$managedObjectClassName$>
-	public struct Relationships {<$foreach Relationship noninheritedRelationships do$>
+	struct Relationships {<$foreach Relationship noninheritedRelationships do$>
 		static let <$Relationship.name$> = "<$Relationship.name$>"<$endforeach do$>
 	}
 	<$endif$>
 
 	<$if noninheritedFetchedProperties.@count > 0$>
 	// Fetched propertie names for <$managedObjectClassName$>
-	public struct FetchedProperties {<$foreach FetchedProperty noninheritedFetchedProperties do$>
+	struct FetchedProperties {<$foreach FetchedProperty noninheritedFetchedProperties do$>
 	    static let <$FetchedProperty.name$> = "<$FetchedProperty.name$>"<$endforeach do$>
 	}
 	<$endif$>
 
 	<$if hasUserInfoKeys && userInfoKeyValues.@count > 0$>
-	public struct UserInfo {<$foreach UserInfo userInfoKeyValues do$>
+	struct UserInfo {<$foreach UserInfo userInfoKeyValues do$>
 	    static let <$UserInfo.key$> = "<$UserInfo.key$>"<$endforeach do$>
 	}
 	<$endif$>
 	/// Create a fetch request for this entity.
-    public class func fetchRequest() -> NSFetchRequest<<$sanitizedManagedObjectClassName$>> {
+    class func fetchRequest() -> NSFetchRequest<<$sanitizedManagedObjectClassName$>> {
         return NSFetchRequest(entityName: self.entityName)
     }
 	
@@ -63,7 +63,7 @@ public extension <$managedObjectClassName$> {
 <$if Attribute.isOptional$>
 <$if Attribute.usesRawValueEnumType$>
 	// Attribute <$Attribute.name$> is an enum with a numeric raw type.
-	public<$if Attribute.isReadonly$> private(set)<$endif$> var <$Attribute.name$>: <$Attribute.attributeRawValueEnumType$>? {
+	<$if Attribute.isReadonly$> private(set)<$endif$> var <$Attribute.name$>: <$Attribute.attributeRawValueEnumType$>? {
 		get {
 			let key = <$managedObjectClassName$>.Attributes.<$Attribute.name$>
 			willAccessValue(forKey: key)
@@ -86,7 +86,7 @@ public extension <$managedObjectClassName$> {
 	}
 <$elseif Attribute.usesScalarAttributeType$>
 	// Attribtue <$Attribute.name$> is a scalar optional
-	public<$if Attribute.isReadonly$> private(set)<$endif$> var <$Attribute.name$>: <$Attribute.scalarAttributeType$>? {
+	<$if Attribute.isReadonly$> private(set)<$endif$> var <$Attribute.name$>: <$Attribute.scalarAttributeType$>? {
 		get {
 			let key = <$managedObjectClassName$>.Attributes.<$Attribute.name$>
 			willAccessValue(forKey: key)
@@ -107,16 +107,16 @@ public extension <$managedObjectClassName$> {
 		}
 	}
 <$else$> <$comment isOptional = true but the above checks are not true $>
-	@NSManaged public<$if Attribute.isReadonly$> private(set)<$endif$> var <$Attribute.name$>: NSNumber?
+	@NSManaged <$if Attribute.isReadonly$> private(set)<$endif$> var <$Attribute.name$>: NSNumber?
 <$endif$> <$comment end of if/elesif/else for optional properties $>
 <$else$> <$comment isOptional is not true but hasScalarAttributeType is still true $>
 	// <$Attribute.name$> is required (not optional)
-	@NSManaged public<$if Attribute.isReadonly$> private(set)<$endif$> var <$Attribute.name$>: <$if Attribute.usesScalarAttributeType$><$Attribute.scalarAttributeType$><$else$>NSNumber<$endif$>
+	@NSManaged <$if Attribute.isReadonly$> private(set)<$endif$> var <$Attribute.name$>: <$if Attribute.usesScalarAttributeType$><$Attribute.scalarAttributeType$><$else$>NSNumber<$endif$>
 <$endif$> <$comment isOptional $>
 <$else$> <$comment hasScalarAttributeType = false (object type) $>
 <$if Attribute.usesRawValueEnumType$> <$comment This is here because enums with String raw value don't count as scalars $>
 	// Attribute <$Attribute.name$> is an enum with a non-numeric raw type.
-	public<$if Attribute.isReadonly$> private(set)<$endif$> var <$Attribute.name$>: <$Attribute.attributeRawValueEnumType$>? {
+	<$if Attribute.isReadonly$> private(set)<$endif$> var <$Attribute.name$>: <$Attribute.attributeRawValueEnumType$>? {
 		get {
 			let key = <$managedObjectClassName$>.Attributes.<$Attribute.name$>
 			willAccessValue(forKey: key)
@@ -139,7 +139,7 @@ public extension <$managedObjectClassName$> {
 	}
 <$elseif Attribute.usesCustomCodableAttributeType$>
 		// Attribute <$Attribute.name$> with Codable type <$Attribute.objectAttributeType$>
-		public<$if Attribute.isReadonly$> private(set)<$endif$> var <$Attribute.name$>: <$Attribute.objectAttributeType$>? {
+		<$if Attribute.isReadonly$> private(set)<$endif$> var <$Attribute.name$>: <$Attribute.objectAttributeType$>? {
 			get {
 				let key = <$managedObjectClassName$>.Attributes.<$Attribute.name$>
 				willAccessValue(forKey: key)
@@ -161,7 +161,7 @@ public extension <$managedObjectClassName$> {
 			}
 		}
 <$else$> <$comment usesRawValueEnumType = false $>
-    @NSManaged public<$if Attribute.isReadonly$> private(set)<$endif$> var <$Attribute.name$>: <$Attribute.objectAttributeType$><$if Attribute.isOptional$>?<$endif$>
+    @NSManaged <$if Attribute.isReadonly$> private(set)<$endif$> var <$Attribute.name$>: <$Attribute.objectAttributeType$><$if Attribute.isOptional$>?<$endif$>
 <$endif$> <$comment usesRawValueEnumType $>
 <$endif$> <$comment hasScalarAttributrType$>
 <$endif$> <$comment hasDefinedAttributeType$>
@@ -170,14 +170,14 @@ public extension <$managedObjectClassName$> {
     // MARK: - Relationships
 <$foreach Relationship noninheritedRelationships do$>
 <$if Relationship.isToMany$>
-    @NSManaged public var <$Relationship.name$>: Set<<$Relationship.destinationEntity.managedObjectClassName$>><$if Relationship.isOptional$>?<$endif$>
+    @NSManaged var <$Relationship.name$>: Set<<$Relationship.destinationEntity.managedObjectClassName$>><$if Relationship.isOptional$>?<$endif$>
 <$else$>
-    @NSManaged public var <$Relationship.name$>: <$Relationship.destinationEntity.managedObjectClassName$><$if Relationship.isOptional$>?<$endif$>
+    @NSManaged var <$Relationship.name$>: <$Relationship.destinationEntity.managedObjectClassName$><$if Relationship.isOptional$>?<$endif$>
 <$endif$>
 <$endforeach do$>
 
 <$foreach FetchedProperty noninheritedFetchedProperties do$>
-    @NSManaged public let <$FetchedProperty.name$>: [<$FetchedProperty.entity.sanitizedManagedObjectClassName$>]
+    @NSManaged let <$FetchedProperty.name$>: [<$FetchedProperty.entity.sanitizedManagedObjectClassName$>]
 <$endforeach do$>
 
 }
