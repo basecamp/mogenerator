@@ -57,6 +57,9 @@ public extension <$managedObjectClassName$> {
 	
     // MARK: - Properties
 <$foreach Attribute noninheritedAttributes do$>
+<$if Attribute.isIgnored$>
+	/* mogenerator.ignore is set for <$Attribute.name$>
+<$endif$>
 <$if Attribute.hasDefinedAttributeType$>	
 <$if Attribute.hasScalarAttributeType$>
 
@@ -165,6 +168,9 @@ public extension <$managedObjectClassName$> {
 <$endif$> <$comment usesRawValueEnumType $>
 <$endif$> <$comment hasScalarAttributrType$>
 <$endif$> <$comment hasDefinedAttributeType$>
+<$if Attribute.isIgnored$>
+	*/
+<$endif$>
 <$endforeach do$> <$comment end of properties $>
 
     // MARK: - Relationships

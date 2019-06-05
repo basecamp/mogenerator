@@ -684,6 +684,14 @@ static const NSString *const kIgnored = @"mogenerator.ignore";
     return NO;
 }
 
+- (BOOL)isIgnored {
+    NSString *ignoredUserinfoValue = [[self userInfo] objectForKey:kIgnored];
+    if (ignoredUserinfoValue != nil) {
+        return YES;
+    }
+    return NO;
+}
+
 @end
 
 @implementation NSRelationshipDescription (collectionClassName)
